@@ -75,6 +75,23 @@ option_name_dropdown = tk.OptionMenu(root, option_name_var, "Option 1", "Option 
 option_value_label = tk.Label(root, text="Option Value:")
 option_value_entry = tk.Entry(root, textvariable=option_value_var)
 
+# Place the labels and fields on the grid
+title_label.grid(row=0, column=0, padx=5, pady=5)
+title_entry.grid(row=0, column=1, padx=5, pady=5)
+
+vendor_label.grid(row=1, column=0, padx=5, pady=5)
+vendor_dropdown.grid(row=1, column=1, padx=5, pady=5)
+
+product_type_label.grid(row=2, column=0, padx=5, pady=5)
+product_type_dropdown.grid(row=2, column=1, padx=5, pady=5)
+
+option_name_label.grid(row=3, column=0, padx=5, pady=5)
+option_name_dropdown.grid(row=3, column=1, padx=5, pady=5)
+
+option_value_label.grid(row=4, column=0, padx=5, pady=5)
+option_value_entry.grid(row=4, column=1, padx=5, pady=5)
+
+
 # Define buttons
 select_image_button = tk.Button(root, text="Select Image", command=select_image)
 rename_files_button = tk.Button(root, text="Rename Files", command=rename_files)
@@ -87,5 +104,8 @@ image_panel = tk.Label(root, width=200, height=200)
 title_label.grid(row=0, column=0, sticky="E")
 title_entry.grid(row=0, column=1)
 
-vendor_label.grid(row=1, column=0, sticky="E")
-vendor_dropdown.grid(row=1,
+
+
+
+# Run the main event loop
+root.mainloop()
