@@ -4,8 +4,8 @@ import tkinter as tk
 from tkinter import filedialog, ttk, Listbox, Canvas, NW, END, messagebox
 from PIL import Image, ImageTk
 import csv
-
 import shutil
+
 
 # Initialize tkinter app
 root = tk.Tk()
@@ -16,6 +16,19 @@ image_folder = ""
 completed_renaming = []
 renamed_files = []
 
+
+# # Configure rows and columns with grid_columnconfigure and grid_rowconfigure
+# for i in range(5):
+#     root.grid_columnconfigure(i, weight=1, minsize=50)
+#     root.grid_rowconfigure(i, weight=1, minsize=50)
+
+# # Create widgets with grid
+# for i in range(5):
+#     for j in range(5):
+#         label = tk.Label(root, text=f"({i}, {j})", borderwidth=1, relief="solid")
+#         label.grid(row=i, column=j, padx=1, pady=1, sticky="nsew")
+
+
 def select_folder():
     global image_folder, image_files
     image_folder = filedialog.askdirectory()
@@ -25,26 +38,22 @@ def select_folder():
         image_listbox.insert(tk.END, image)
 
 
-# Create a label to display the count of total image files
 count_label = tk.Label(root, text="")
-count_label.pack(side="right", padx=5, pady=5, anchor="ne") 
+count_label.grid(row=0, column=0, padx=5, pady=10, sticky="sw") 
 
 
 # Create button to select folder
 select_folder_button = tk.Button(root, text="Select Folder", command=select_folder)
-select_folder_button.pack(side="right", padx=5, pady=5, anchor="ne")
-
-
-
+select_folder_button.grid(row=7, column=0, padx=5, pady=5)
 
 
 # Create listbox to display image files
-image_listbox = tk.Listbox(root,width=70)
-image_listbox.pack(side="right", padx=5, pady=5, anchor="ne")
+image_listbox = tk.Listbox(root,width=100)
+image_listbox.grid(row=0, column=0,columnspan=4, padx=5, pady=1, sticky="w")
 
 # Create Canvas to display image
 image_canvas = tk.Canvas(root, width=400, height=400)
-image_canvas.pack(side="right", padx=5, pady=5, anchor="ne")
+image_canvas.grid(row=0, column=5, padx=5, pady=1, sticky="w")
 
 # Function to display selected image
 def show_image(event):
@@ -61,75 +70,24 @@ def show_image(event):
 # Bind Listbox selection event to show_image function
 image_listbox.bind('<<ListboxSelect>>', show_image)
 
-# Define input variables
-vendor_var = tk.StringVar(root)
-vendor_options = ["Vendor 1", "Vendor 2", "Vendor 3", "Vendor 4"]
-product_type_var = tk.StringVar(root)
-product_type_options = ["Type 1", "Type 2", "Type 3", "Type 4"]
-title_var = tk.StringVar(root)
-option_name_var = tk.StringVar(root)
-option_name_options = ["Option 1", "Option 2", "Option 3", "Option 4"]
-option_value_var = tk.StringVar(root)
-
-
-vendor_label = tk.Label(root, text="Vendor:")
-vendor_dropdown = tk.OptionMenu(root, vendor_var, *vendor_options)
-vendor_label.pack(side="top", padx=5, pady=5, anchor="nw")
-vendor_dropdown.pack(side="top", padx=5, pady=5, anchor="nw")
-
-product_type_label = tk.Label(root, text="Product Type:")
-product_type_dropdown = tk.OptionMenu(root, product_type_var, *product_type_options)
-product_type_label.pack(side="top", padx=5, pady=5, anchor="nw")
-product_type_dropdown.pack(side="top", padx=5, pady=5, anchor="nw")
-
-title_label = tk.Label(root, text="Title:")
-title_entry = tk.Entry(root, textvariable=title_var, width=100)
-title_label.pack(side="top", padx=5, pady=5, anchor="nw")
-title_entry.pack(side="top", padx=5, pady=5, anchor="nw")
-
-option_name_label = tk.Label(root, text="Option Name:")
-option_name_dropdown = tk.OptionMenu(root, option_name_var, *option_name_options)
-option_name_label.pack(side="top", padx=5, pady=5, anchor="nw")
-option_name_dropdown.pack(side="top", padx=5, pady=5, anchor="nw")
-
-option_value_label = tk.Label(root, text="Option Value:")
-option_value_entry = tk.Entry(root, textvariable=option_value_var)
-option_value_label.pack(side="top", padx=5, pady=5, anchor="nw")
-option_value_entry.pack(side="top", padx=5, pady=5, anchor="nw")
-
-
-
 # Create the renamed_listbox
-renamed_listbox = tk.Listbox(root, width=50)
-renamed_listbox.pack(side=tk.BOTTOM, padx=10, pady=10)
+renamed_listbox = tk.Listbox(root, width=100)
+renamed_listbox.grid(row=4, column=0,columnspan=4, padx=10, pady=10)
 
-# def rename_file():
-#     # Get selected image filename
-#     selected_file = image_listbox.get(image_listbox.curselection())
-
-#     # Create new filename
-#     new_filename = f"{vendor_var.get()}--{product_type_var.get()}--{title_var.get()}--{option_name_var.get()}-{option_value_var.get()}"
-    
-#     # Rename file
-#     os.rename(os.path.join(image_folder, selected_file), os.path.join(image_folder, new_filename))
-
-#     # Update image_listbox
-#     image_listbox.delete(image_listbox.curselection())
-
-#     # Add new filename to renamed_files array
-#     renamed_files.append(new_filename)
-
-#     # Update renamed_listbox
-#     renamed_listbox.delete(0, END)
-#     for file in renamed_files:
-#         renamed_listbox.insert(END, file)
+from PIL import Image
 
 def rename_file():
     # Get selected image filename
     selected_file = image_listbox.get(image_listbox.curselection())
 
-    # Create new filename
-    new_filename = f"{vendor_var.get()}--{product_type_var.get()}--{title_var.get()}--{option_name_var.get()}-{option_value_var.get()}{os.path.splitext(selected_file)[1]}"
+    # Get image aspect ratio
+    img_path = os.path.join(image_folder, selected_file)
+    with Image.open(img_path) as img:
+        width, height = img.size
+        aspect_ratio = round(width / height, 2)
+
+    # Create new filename with aspect ratio
+    new_filename = f"{product_type_var.get()}--{title_var.get()}--{aspect_ratio}--0--{os.path.splitext(selected_file)[1]}"
 
     try:
         # Rename file
@@ -151,14 +109,21 @@ def rename_file():
 
     except Exception as e:
         tk.messagebox.showerror("Error", f"An error occurred while renaming the file: {e}")
-             # Print error message to console for debugging
+        # Print error message to console for debugging
         print(f"Error occurred while renaming the file: {str(e)}")
 
 
-
-# "Rename File" and binds it to the function 'rename_file'.
+# "Rename File" and binds it to the function 'rename_raw_file'.
 rename_button = tk.Button(root, text="Rename File", command=rename_file)
-rename_button.pack()
+rename_button.grid(row=7, column=2, padx=5, pady=1)
+
+
+
+
+
+
+
+
 
 def create_csv():
     # Prompt user for save location
@@ -249,8 +214,12 @@ def create_csv():
     tk.messagebox.showinfo('CSV Created', 'CSV file created successfully.')
 
 
+
+
+# Create CSV button
 create_csv_button = tk.Button(root, text='Create CSV', command=create_csv)
-create_csv_button.pack(side=tk.LEFT, padx=10, pady=10)
+create_csv_button.grid(row=7, column=3, padx=10, pady=10)
+
 
 
 def create_output_folder():
@@ -262,14 +231,9 @@ def create_output_folder():
     else:
         tk.messagebox.showerror("Error", "No output folder selected")
 
+# Create Output Folder button
 create_output_folder_button = tk.Button(root, text="Create Output Folder", command=create_output_folder)
-create_output_folder_button.pack()
-
-
-
-
-
-
+create_output_folder_button.grid(row=7, column=1, padx=10, pady=10)
 
 
 

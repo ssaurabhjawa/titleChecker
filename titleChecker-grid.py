@@ -9,7 +9,7 @@ from PIL import Image
 
 # Initialize tkinter app
 root = tk.Tk()
-root.title("Image Renaming App")
+root.title(" OBL Image Naming App")
 
 # Define global variables
 image_folder = ""
@@ -43,10 +43,10 @@ count_label.grid(row=0, column=0, padx=5, pady=10, sticky="sw")
 
 # Create button to select folder
 select_folder_button = tk.Button(root, text="Select Folder", command=select_folder)
-select_folder_button.grid(row=7, column=0, padx=5, pady=5)
+select_folder_button.grid(row=3, column=0, padx=5, pady=5)
 
 # Create listbox to display image files
-image_listbox = tk.Listbox(root,width=100)
+image_listbox = tk.Listbox(root,width=100,height=20)
 image_listbox.grid(row=0, column=0,columnspan=4, padx=5, pady=1, sticky="w")
 
 # Create Canvas to display image
@@ -65,12 +65,49 @@ def show_image(event):
     image_canvas.create_image(0, 0, anchor=NW, image=img_tk)
     image_canvas.image = img_tk
 
+    # Update the selected image label
+    update_selected_image(event)
+
+
 # Bind Listbox selection event to show_image function
-image_listbox.bind('<<ListboxSelect>>', show_image)
+# image_listbox.bind('<<ListboxSelect>>', show_image)
+
+def update_selected_image(event):
+    # Get the selected image filename from the image_listbox
+    selected_image = image_listbox.get(image_listbox.curselection())
+
+    # Update the selected image label
+    selected_label.config(text=f"Selected Image: {selected_image}")
+
+    # Set the focus back to the previously selected item in image_listbox
+    image_listbox.activate(image_listbox.curselection())
+
+
+# Create new Listbox widget to hold current selection
+current_selection_listbox = tk.Listbox(root, height=1, width=100)
+current_selection_listbox.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+def update_current_selection(event):
+    # Get selected file name
+    selected_file = image_listbox.get(image_listbox.curselection())
+    
+    # Update current selection Listbox
+    current_selection_listbox.delete(0, tk.END)
+    current_selection_listbox.insert(0, selected_file)
+
+# Bind the image_listbox to update the current_selection_listbox
+# image_listbox.bind('<<ListboxSelect>>', update_current_selection)
+image_listbox.bind('<<ListboxSelect>>', lambda event: (update_current_selection(), show_image()))
+
+
+
 
 # Define input variables
-product_type_var = tk.StringVar(root)
 product_type_options = ["Canvas", "Acrylic", "Mugs", "T-Shirts","Wall Paper", "Poster", "NoteBook", "ArtBook"]
+product_type_var = tk.StringVar(root, product_type_options[0])
+
+
+
 title_var = tk.StringVar(root)
 # Create variable for image position
 image_position_var = tk.IntVar(value=0)
@@ -78,13 +115,16 @@ image_position_var = tk.IntVar(value=0)
 
 product_type_label = tk.Label(root, text="Product Type:")
 product_type_dropdown = tk.OptionMenu(root, product_type_var, *product_type_options)
-product_type_label.grid(row=2, column=1, padx=5, pady=1, sticky="w")
-product_type_dropdown.grid(row=3, column=1, padx=5, pady=1, sticky="w")
+product_type_dropdown.config(width=15)
+
+
+product_type_label.grid(row=3, column=1, padx=5, pady=1, sticky="w")
+product_type_dropdown.grid(row=3, column=1, padx=5, pady=1, sticky="e")
 
 title_label = tk.Label(root, text="Title:")
 title_entry = tk.Entry(root, textvariable=title_var, width=100)
-title_label.grid(row=0, column=0, padx=5, pady=1, sticky="sw")
-title_entry.grid(row=1, column=0, columnspan=4, padx=5, pady=1, sticky="w")
+title_label.grid(row=2, column=0, padx=5, pady=1, sticky="e")
+title_entry.grid(row=2, column=1, columnspan=2, padx=5, pady=1, sticky="w")
 
 # Create the renamed_listbox
 renamed_listbox = tk.Listbox(root, width=100)
@@ -148,15 +188,15 @@ def rename_file():
 
 # "Rename File" and binds it to the function 'rename_file'.
 rename_button = tk.Button(root, text="Rename File", command=rename_file)
-rename_button.grid(row=7, column=2, padx=5, pady=1)
+rename_button.grid(row=3, column=2, padx=5, pady=1)
 
 # Listbox widget to display the output image files and set its width
-output_listbox = tk.Listbox(root, width=70)
+output_listbox = tk.Listbox(root, width=70,height=20)
 output_listbox.grid(row=0, column=6, padx=5, pady=1)
 
 # Create a label to display the selected name
 selected_label = tk.Label(root, text="Selected Name: ")
-selected_label.grid(row=2, column=2, columnspan=5, padx=5, pady=5, sticky="w")
+selected_label.grid(row=2, column=5, columnspan=5, padx=5, pady=5, sticky="nw")
 
 # Function to update the selected name label
 def update_selected_name(event):
@@ -200,8 +240,8 @@ def find_name():
 
 
 
-find_name_button = tk.Button(root, text="Find Name", command=find_name)
-find_name_button.grid(row=4, column=5, padx=5, pady=5, sticky="w")
+find_name_button = tk.Button(root, text="Use Name", command=find_name)
+find_name_button.grid(row=2, column=7, padx=5, pady=5, sticky="N")
 
 
 def rename_file_with_position():
@@ -241,7 +281,7 @@ def rename_file_with_position():
 
 # Button to rename selected image file with highest image position from entry box
 rename_with_position_button = tk.Button(root, text="Rename File with Position", command=rename_file_with_position)
-rename_with_position_button.grid(row=10, column=1, padx=10, pady=10)
+rename_with_position_button.grid(row=20, column=1, padx=10, pady=10)
 
 
 # Run the main event loop

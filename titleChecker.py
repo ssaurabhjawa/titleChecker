@@ -61,7 +61,7 @@ def clear_input():
 
 # Define input labels and fields
 title_label = tk.Label(root, text="Title:")
-title_entry = tk.Entry(root, textvariable=title_var)
+title_entry = tk.Entry(root, textvariable=title_var, width=50)
 
 vendor_label = tk.Label(root, text="Vendor:")
 vendor_dropdown = tk.OptionMenu(root, vendor_var, "Vendor 1", "Vendor 2", "Vendor 3")
@@ -104,7 +104,16 @@ image_panel = tk.Label(root, width=200, height=200)
 title_label.grid(row=0, column=0, sticky="E")
 title_entry.grid(row=0, column=1)
 
+def select_image():
+    # Open file dialog to select image file
+    file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg;*.jpeg;*.png")])
 
+    # Display image in left panel
+    img = Image.open(file_path)
+    img.thumbnail((200, 200))
+    img_tk = ImageTk.PhotoImage(img)
+    image_panel.configure(image=img_tk)
+    image_panel.image = img_tk
 
 
 # Run the main event loop
