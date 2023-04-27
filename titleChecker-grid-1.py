@@ -182,7 +182,7 @@ create_output_folder_button.grid(row=7, column=1, padx=10, pady=10)
 
 def rename_file():
     # Get selected image filename
-    selected_file = image_listbox.get(image_listbox.curselection())
+    selected_file = current_selection_listbox.get(current_selection_listbox.curselection())
 
     # Get image aspect ratio
     img_path = os.path.join(image_folder, selected_file)
@@ -200,8 +200,15 @@ def rename_file():
         # Copy file to output folder with new filename
         shutil.copy(os.path.join(image_folder, new_filename), os.path.join(output_folder_path, new_filename))
 
+        # Update current_selection_listbox
+        current_selection_listbox.delete(0, tk.END)
+        current_selection_listbox.insert(0, new_filename)
+
         # Update image_listbox
-        image_listbox.delete(image_listbox.curselection())
+        image_listbox.delete(0, tk.END)
+        for file in os.listdir(image_folder):
+            if file.endswith((".jpg", ".jpeg", ".png")):
+                image_listbox.insert(tk.END, file)
 
         # Add new filename to renamed_files array
         renamed_files.append(new_filename)
@@ -215,6 +222,43 @@ def rename_file():
         tk.messagebox.showerror("Error", f"An error occurred while renaming the file: {e}")
         # Print error message to console for debugging
         print(f"Error occurred while renaming the file: {str(e)}")
+
+
+# def rename_file():
+#     # Get selected image filename
+#     selected_file = image_listbox.get(image_listbox.curselection())
+
+#     # Get image aspect ratio
+#     img_path = os.path.join(image_folder, selected_file)
+#     with Image.open(img_path) as img:
+#         width, height = img.size
+#         aspect_ratio = round(width / height, 2)
+
+#     # Create new filename with aspect ratio
+#     new_filename = f"{product_type_var.get()}--{title_var.get()}--{aspect_ratio}--{image_position_var.get()}{os.path.splitext(selected_file)[1]}"
+
+#     try:
+#         # Rename file
+#         os.rename(os.path.join(image_folder, selected_file), os.path.join(image_folder, new_filename))
+
+#         # Copy file to output folder with new filename
+#         shutil.copy(os.path.join(image_folder, new_filename), os.path.join(output_folder_path, new_filename))
+
+#         # Update image_listbox
+#         image_listbox.delete(image_listbox.curselection())
+
+#         # Add new filename to renamed_files array
+#         renamed_files.append(new_filename)
+
+#         # Update renamed_listbox
+#         renamed_listbox.delete(0, END)
+#         for file in renamed_files:
+#             renamed_listbox.insert(END, file)
+
+#     except Exception as e:
+#         tk.messagebox.showerror("Error", f"An error occurred while renaming the file: {e}")
+#         # Print error message to console for debugging
+#         print(f"Error occurred while renaming the file: {str(e)}")
 
 
 # "Rename File" and binds it to the function 'rename_file'.
